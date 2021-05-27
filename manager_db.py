@@ -10,20 +10,20 @@ class Connect(object):
             self.conn = sqlite3.connect(db_name)
             self.cursor = self.conn.cursor()
             # Criando a tabela....
-            self.cursor.execute("""CREATE TABLE usuarios (
+            self.cursor.execute("""CREATE TABLE IF NOT EXISTS usuarios1 (
                                     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                                     nome TEXT NOT NULL,
-                                    idade INTEGER,
                                     cpf VARCHAR(11) NOT NULL,
                                     email TEXT NOT NULL,
                                     fone TEXT,
                                     endereco TEXT,
-                                    senha TEXT); """)
+                                    username TEXT NOT NULL,
+                                    senha TEXT NOT NULL); """)
+            self.cursor.execute('SELECT SQLITE_VERSION()')
             self.data = self.cursor.fetchone()
             print('SQLite version: %s' % self.data)
-        except sqlite3.Error:
-            print("Erro ao abrir o banco de dados.")
-            return False
+        except sqlite3.Error as e:
+            print("Erro ao abrir o banco de dados.", e)
 
     def commit_db(self):
         if self.conn:
@@ -34,19 +34,39 @@ class Connect(object):
             self.conn.close()
 
 
-
 class UsuariosDb(object):
     def __init__(self):
         self.db = Connect('usuarios.db')
         self.tb_name = 'usuarios'
 
-    def inserir(self, nome, idade, cpf, email, fone, endereco, senha):
-        self.db.cursor.execute("""
-        INSERT INTO usuarios (nome, idade, cpf, email, fone, endereco, senha)
-        VALUES (?,?,?,?,?,?,?)
-        """, (nome, idade, cpf, email, fone, endereco, senha))
-        self.db.commit_db()
-        print("Cadastrado com sucesso :)")
+    def inserir(self):
+        self.nome = input('Nome: ')
+        self.cpf = input ('CPF: ')
+        self.email = input('Email: ')
+        self.fone = input('Celular: ')
+        self. endereco = input('Endereco: ')
+        self.login = input('Username: ')
+        self.senha = input('Senha: ')
+
+        try:
+            self.db.cursor.execute("""
+            INSERT INTO usuarios1 (nome, cpf, email, fone, endereco, username, senha)
+            VALUES (?,?,?,?,?,?,?)
+            """, (self.nome, self.cpf, self.email, self.fone, self.endereco, self.login, self.senha))
+            self.db.commit_db()
+            print("Cadastrado com sucesso :)")
+        except sqlite3.Error as e:
+            print("Error. :(", e)
 
     def fechar_conexao(self):
         self.db.close_db()
+
+    def ler_todos(self):
+        sql = 'SELECT * FROM usuarios1 ORDER BY nome'
+        r = self.db.cursor.execute(sql)
+        return r.fetchall()
+
+    def imprimir_usuarios(self):
+        lista = self.ler_todos()
+        for c in lista:
+            print(c)
