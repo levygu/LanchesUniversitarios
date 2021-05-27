@@ -12,6 +12,8 @@ class Cadastro(object):
     def imprime (self):
         d = UsuariosDb()    
         d.imprimir_usuarios()
+    
+
 
 c = Cadastro() 
 macarrao = 2
