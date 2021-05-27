@@ -39,20 +39,14 @@ class UsuariosDb(object):
         self.db = Connect('usuarios.db')
         self.tb_name = 'usuarios'
 
-    def inserir(self):
-        self.nome = input('Nome: ')
-        self.cpf = input ('CPF: ')
-        self.email = input('Email: ')
-        self.fone = input('Celular: ')
-        self. endereco = input('Endereco: ')
-        self.login = input('Username: ')
-        self.senha = input('Senha: ')
+    def inserir(self, nome1, cpf1, email1, fone1, endereco1, login1, senha1):
+
 
         try:
             self.db.cursor.execute("""
             INSERT INTO usuarios1 (nome, cpf, email, fone, endereco, username, senha)
             VALUES (?,?,?,?,?,?,?)
-            """, (self.nome, self.cpf, self.email, self.fone, self.endereco, self.login, self.senha))
+            """, (nome1, cpf1, email1, fone1, endereco1, login1, senha1))
             self.db.commit_db()
             print("Cadastrado com sucesso :)")
         except sqlite3.Error as e:
