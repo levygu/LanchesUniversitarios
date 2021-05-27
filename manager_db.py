@@ -70,3 +70,22 @@ class UsuariosDb(object):
         lista = self.ler_todos()
         for c in lista:
             print(c)
+
+    def localizar_usuario_por_username(self, username):
+        resultado = self.db.cursor.execute(
+            'SELECT username FROM usuarios1 WHERE username = ?', (username,))
+        #print (resultado.fetchone())
+        self.flag = resultado.fetchone()
+        if self.flag == None:
+            return 1
+        else:
+            return 0
+
+    def verifica_senha(self, senha):
+        resultado = self.db.cursor.execute(
+            'SELECT senha FROM usuarios1 where senha = ?', (senha,))
+        self.flag = resultado.fetchone()
+        if self.flag == None:
+            return 1
+        else:
+            return 0
